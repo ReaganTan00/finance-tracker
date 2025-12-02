@@ -1,0 +1,499 @@
+# ============================================================================
+# FINANCE TRACKER - COMPLETE .GITIGNORE
+# ============================================================================
+
+finance-tracker-database.txt
+prod-ca-2021.crt
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env*.local
+
+# Configuration files with secrets
+**/application-prod.yml
+**/application-production.yml
+**/application-local.yml
+application-secrets.yml
+secrets.yml
+config/secrets.yml
+
+# Database credentials
+database.properties
+db-credentials.txt
+
+# API keys and tokens
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+*-key.json
+service-account.json
+firebase-adminsdk.json
+
+# SSH keys
+id_rsa
+id_rsa.pub
+*.ppk
+
+# AWS credentials
+.aws/
+aws-credentials.txt
+
+# SSL certificates (if storing locally)
+*.crt
+*.key
+*.pem
+ssl/
+
+# JWT secrets
+jwt-secret.txt
+jwt.key
+
+# OAuth secrets
+oauth-secrets.json
+
+# ============================================================================
+# JAVA / SPRING BOOT BACKEND
+# ============================================================================
+
+# Compiled class files
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Maven
+backend/**/target/
+backend/**/.mvn/wrapper/maven-wrapper.jar
+backend/**/mvnw
+backend/**/mvnw.cmd
+backend/**/.flattened-pom.xml
+**/pom.xml.tag
+**/pom.xml.releaseBackup
+**/pom.xml.versionsBackup
+**/pom.xml.next
+**/release.properties
+**/dependency-reduced-pom.xml
+**/buildNumber.properties
+**/.mvn/timing.properties
+
+# Gradle
+backend/**/.gradle/
+backend/**/build/
+backend/**/gradle-app.setting
+backend/**/.gradletasknamecache
+backend/**/gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+out/
+backend/**/.idea/
+backend/**/*.iml
+
+# Eclipse
+.settings/
+.classpath
+.project
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# Spring Boot
+backend/**/spring-shell.log
+backend/**/.springBeans
+backend/**/application-local.yml
+backend/**/application-dev.yml
+
+# Logs
+*.log
+logs/
+backend/**/logs/
+backend/**/*.log
+backend/**/*.log.*
+
+# Test coverage
+backend/**/coverage/
+backend/**/.jacoco/
+backend/**/*.exec
+
+# ============================================================================
+# REACT NATIVE / EXPO FRONTEND
+# ============================================================================
+
+# Dependencies
+mobile/node_modules/
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Expo
+mobile/.expo/
+mobile/.expo-shared/
+mobile/dist/
+mobile/web-build/
+.expo/
+.expo-shared/
+
+# React Native
+mobile/.react-native/
+mobile/android/app/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/app/release/
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/ios/*.xcworkspace
+mobile/ios/*.xcuserstate
+
+# Metro bundler
+mobile/.metro-health-check*
+.metro-health-check*
+
+# Testing
+mobile/coverage/
+mobile/.nyc_output/
+*.lcov
+
+# Misc
+mobile/.DS_Store
+.DS_Store
+Thumbs.db
+
+# Lock files (choose one to keep)
+# Keep package-lock.json if using npm
+# mobile/package-lock.json
+# Keep yarn.lock if using yarn
+# mobile/yarn.lock
+
+# ============================================================================
+# MOBILE PLATFORM SPECIFIC
+# ============================================================================
+
+# Android
+*.apk
+*.aab
+*.ap_
+*.dex
+local.properties
+.gradle/
+mobile/android/.idea/
+mobile/android/captures/
+mobile/android/app/google-services.json
+mobile/android/app/src/main/assets/
+mobile/android/app/src/main/res/raw/
+
+# iOS
+*.ipa
+*.dSYM.zip
+*.dSYM
+mobile/ios/Pods/
+mobile/ios/.xcode.env.local
+mobile/ios/build/
+mobile/ios/*.xcworkspace
+mobile/ios/*.xcuserstate
+mobile/ios/GoogleService-Info.plist
+
+# Fastlane
+mobile/fastlane/report.xml
+mobile/fastlane/Preview.html
+mobile/fastlane/screenshots
+mobile/fastlane/test_output
+
+# ============================================================================
+# DOCKER & DEPLOYMENT
+# ============================================================================
+
+# Docker
+*.tar
+*.tar.gz
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Docker volumes (if storing locally)
+volumes/
+data/
+
+# Kubernetes secrets
+k8s-secrets.yml
+secrets.yaml
+
+# ============================================================================
+# DATABASE
+# ============================================================================
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# PostgreSQL
+*.sql.gz
+dump.sql
+backup.sql
+*.backup
+
+# Database migrations (keep tracked, but ignore local test migrations)
+# Uncomment if you want to ignore specific migration files
+# **/db/migration/*-test.sql
+# **/db/migration/*-local.sql
+
+# ============================================================================
+# OPERATING SYSTEM FILES
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# EDITOR & IDE BACKUP FILES
+# ============================================================================
+
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+*.bak
+*.orig
+.*.sw?
+.~lock.*
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+
+# ============================================================================
+# BUILD & DISTRIBUTION
+# ============================================================================
+
+# Build outputs
+build/
+dist/
+target/
+out/
+*.bundle
+*.map
+
+# Generated files
+generated/
+auto-generated/
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+
+# Test results
+test-results/
+junit.xml
+*.xml
+coverage/
+.nyc_output/
+*.lcov
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# ============================================================================
+# DOCUMENTATION (OPTIONAL - UNCOMMENT IF NEEDED)
+# ============================================================================
+
+# If you don't want to commit generated docs
+# docs/_build/
+# docs/.doctrees/
+# site/
+
+# ============================================================================
+# PACKAGE MANAGERS
+# ============================================================================
+
+# NPM
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ============================================================================
+# MISC
+# ============================================================================
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Compressed files (unless needed)
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tgz
+
+# Large media files (if not needed in repo)
+# *.mp4
+# *.mov
+# *.avi
+# *.mp3
+
+# Backup files
+*.backup
+*.old
+backup/
+
+# ============================================================================
+# PROJECT SPECIFIC (CUSTOMIZE AS NEEDED)
+# ============================================================================
+
+# Local development databases
+dev.db
+test.db
+local.db
+
+# Local scripts
+run-local.sh
+deploy-local.sh
+*.local.sh
+
+# Personal notes
+NOTES.md
+TODO.md
+PERSONAL.md
+notes/
+personal/
+
+# Test data
+test-data/
+mock-data/
+fixtures/
+
+# Cache directories
+.cache/
+*.cache
+cache/
+
+# ============================================================================
+# CLOUD & CI/CD
+# ============================================================================
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+
+# Cloud provider configs
+.gcloud/
+.azure/
+
+# CI/CD artifacts
+.github/workflows/secrets.yml
+.gitlab/secrets.yml
+.circleci/secrets.yml
+
+# ============================================================================
+# END OF .GITIGNORE
+# ============================================================================
