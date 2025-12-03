@@ -4,6 +4,7 @@
 
 finance-tracker-database.txt
 prod-ca-2021.crt
+**/application.yaml
 
 # Environment variables
 .env

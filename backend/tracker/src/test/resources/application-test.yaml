@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require
+    username: postgres.gxmxpglyhzaxfmnxajey
+    password: BszW0Kzk2gFOo412
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
