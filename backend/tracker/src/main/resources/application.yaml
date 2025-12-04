@@ -3,9 +3,9 @@ spring:
     name: Finance-Tracker
 
   datasource:
-    url: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?user=postgres.gxmxpglyhzaxfmnxajey&password=BszW0Kzk2gFOo412
-    username: postgres.gxmxpglyhzaxfmnxajey
-    password: BszW0Kzk2gFOo412
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}
@@ -39,7 +39,7 @@ server:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  secret: ${JWT_SECRET:secret}
   expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
 
 # Logging Configuration
