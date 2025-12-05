@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,22 +7,38 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { TextInput, Button, Text, HelperText } from 'react-native-paper';
+import { TextInput, Button, Text, HelperText, Snackbar } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../navigation/AuthNavigator';
+import { useAuthStore } from '../store/authStore';
+
+type SignUpScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'SignUp'>;
 
 export default function SignUpScreen() {
+  const navigation = useNavigation<SignUpScreenNavigationProp>();
+  const { register, isLoading, error, clearError } = useAuthStore();
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  // Show snackbar when there's an error from the store
+  useEffect(() => {
+    if (error) {
+      setSnackbarVisible(true);
+    }
+  }, [error]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,6 +51,7 @@ export default function SignUpScreen() {
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
+    clearError();
 
     // Validation
     let hasError = false;
@@ -73,22 +90,20 @@ export default function SignUpScreen() {
 
     if (hasError) return;
 
-    // TODO: Implement sign up API call
-    setIsLoading(true);
+    // Call register from auth store
     try {
-      console.log('Signing up with:', { name, email, password });
-      // await signUpAPI(name, email, password);
+      await register(name, email, password);
+      // Navigation to app screens is handled automatically by RootNavigator
     } catch (error) {
-      console.error('Sign up failed:', error);
-    } finally {
-      setIsLoading(false);
+      // Error is already set in the store and will show in snackbar
+      console.error('Registration error:', error);
     }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-
+      
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -265,13 +280,33 @@ export default function SignUpScreen() {
             {/* Login Link */}
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Already have an account? </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <Text style={styles.loginLink}>Sign In</Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => {
+          setSnackbarVisible(false);
+          clearError();
+        }}
+        duration={4000}
+        action={{
+          label: 'Dismiss',
+          onPress: () => {
+            setSnackbarVisible(false);
+            clearError();
+          },
+        }}
+        style={styles.snackbar}
+      >
+        {error || 'An error occurred'}
+      </Snackbar>
     </View>
   );
 }
@@ -376,5 +411,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#FF8FAB',
     fontWeight: '600',
+  },
+  snackbar: {
+    backgroundColor: '#FF5252',
   },
 });

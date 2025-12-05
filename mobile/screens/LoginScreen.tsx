@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,16 +7,32 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { TextInput, Button, Text, HelperText } from 'react-native-paper';
+import { TextInput, Button, Text, HelperText, Snackbar } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../navigation/AuthNavigator';
+import { useAuthStore } from '../store/authStore';
+
+type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen() {
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const { login, isLoading, error, clearError } = useAuthStore();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  // Show snackbar when there's an error from the store
+  useEffect(() => {
+    if (error) {
+      setSnackbarVisible(true);
+    }
+  }, [error]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,6 +43,7 @@ export default function LoginScreen() {
     // Reset errors
     setEmailError('');
     setPasswordError('');
+    clearError();
 
     // Validation
     let hasError = false;
@@ -49,22 +66,20 @@ export default function LoginScreen() {
 
     if (hasError) return;
 
-    // TODO: Implement login API call
-    setIsLoading(true);
+    // Call login from auth store
     try {
-      console.log('Logging in with:', { email, password });
-      // await loginAPI(email, password);
+      await login(email, password);
+      // Navigation to app screens is handled automatically by RootNavigator
     } catch (error) {
-      console.error('Login failed:', error);
-    } finally {
-      setIsLoading(false);
+      // Error is already set in the store and will show in snackbar
+      console.error('Login error:', error);
     }
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-
+      
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -185,13 +200,33 @@ export default function LoginScreen() {
             {/* Sign Up Link */}
             <View style={styles.signupContainer}>
               <Text style={styles.signupText}>Don't have an account? </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                 <Text style={styles.signupLink}>Sign Up</Text>
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => {
+          setSnackbarVisible(false);
+          clearError();
+        }}
+        duration={4000}
+        action={{
+          label: 'Dismiss',
+          onPress: () => {
+            setSnackbarVisible(false);
+            clearError();
+          },
+        }}
+        style={styles.snackbar}
+      >
+        {error || 'An error occurred'}
+      </Snackbar>
     </View>
   );
 }
@@ -309,5 +344,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#FF8FAB',
     fontWeight: '600',
+  },
+  snackbar: {
+    backgroundColor: '#FF5252',
   },
 });
