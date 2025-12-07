@@ -1,16 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Card, Title, Paragraph, List, Divider, Avatar, Button } from 'react-native-paper';
+import { Card, Title, Paragraph, List, Divider, Avatar, Button, Badge } from 'react-native-paper';
 import { useAuthStore } from '../store/authStore';
+import { usePartnerStore } from '../store/partnerStore';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileScreen() {
+  const navigation = useNavigation<any>();
   const { user, logout } = useAuthStore();
+  const { currentPartner, incomingRequest, fetchPartnerStatus } = usePartnerStore();
+
+  useEffect(() => {
+    fetchPartnerStatus();
+  }, []);
 
   const handleLogout = async () => {
     try {
       await logout();
     } catch (error) {
       console.error('Logout error:', error);
+    }
+  };
+
+  const handlePartnerNavigation = () => {
+    if (currentPartner) {
+      navigation.navigate('PartnerProfile');
+    } else if (incomingRequest) {
+      navigation.navigate('PartnerRequests');
+    } else {
+      navigation.navigate('PartnerConnection');
+    }
+  };
+
+  const getPartnerDescription = () => {
+    if (currentPartner) {
+      return `Connected with ${currentPartner.name}`;
+    } else if (incomingRequest) {
+      return `Pending request from ${incomingRequest.name}`;
+    } else {
+      return 'No partner linked';
     }
   };
 
@@ -66,8 +94,9 @@ export default function ProfileScreen() {
 
             <List.Item
               title="Partner Status"
-              description={user?.partnerId ? `Linked to Partner ID: ${user.partnerId}` : 'No partner linked'}
+              description={getPartnerDescription()}
               left={(props) => <List.Icon {...props} icon="account-multiple" color="#FF8FAB" />}
+              right={(props) => incomingRequest ? <Badge size={24} style={styles.badge}>!</Badge> : null}
               titleStyle={styles.listTitle}
               descriptionStyle={styles.listDescription}
             />
@@ -99,10 +128,15 @@ export default function ProfileScreen() {
             <Divider />
 
             <List.Item
-              title="Link Partner"
+              title={currentPartner ? "Partner Profile" : "Manage Partner"}
               left={(props) => <List.Icon {...props} icon="link-variant" color="#FF8FAB" />}
-              right={(props) => <List.Icon {...props} icon="chevron-right" />}
-              onPress={() => console.log('Link partner')}
+              right={(props) => (
+                <>
+                  {incomingRequest && <Badge size={24} style={styles.badge}>1</Badge>}
+                  <List.Icon {...props} icon="chevron-right" />
+                </>
+              )}
+              onPress={handlePartnerNavigation}
               titleStyle={styles.listTitle}
             />
             <Divider />
@@ -200,5 +234,9 @@ const styles = StyleSheet.create({
   logoutButton: {
     borderRadius: 8,
     paddingVertical: 4,
+  },
+  badge: {
+    backgroundColor: '#FF6B6B',
+    marginRight: 8,
   },
 });
