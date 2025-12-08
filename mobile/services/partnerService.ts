@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 
 // API Base URL (matching authService)
 const API_BASE_URL = __DEV__
-  ? "http://192.168.0.10:8080/api"
+  ? "http://192.168.1.11:8080/api"
   : "http://10.244.74.33:8080/api";
 
 // Partner-related types

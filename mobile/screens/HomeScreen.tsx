@@ -82,7 +82,7 @@ export default function HomeScreen() {
             <Button
               mode="contained"
               icon="plus-circle"
-              onPress={() => console.log('Add transaction')}
+              onPress={() => navigation.navigate('AddTransaction')}
               style={styles.actionButton}
               buttonColor="#FF8FAB"
             >
@@ -91,12 +91,32 @@ export default function HomeScreen() {
 
             <Button
               mode="outlined"
+              icon="format-list-bulleted"
+              onPress={() => navigation.navigate('TransactionList')}
+              style={styles.actionButton}
+              textColor="#FF8FAB"
+            >
+              View Transactions
+            </Button>
+
+            <Button
+              mode="outlined"
               icon="chart-line"
-              onPress={() => console.log('View budgets')}
+              onPress={() => navigation.navigate('BudgetList')}
               style={styles.actionButton}
               textColor="#FF8FAB"
             >
               View Budgets
+            </Button>
+
+            <Button
+              mode="outlined"
+              icon="tag-multiple"
+              onPress={() => navigation.navigate('CategoryManagement')}
+              style={styles.actionButton}
+              textColor="#FF8FAB"
+            >
+              Manage Categories
             </Button>
 
             <Button
@@ -123,11 +143,11 @@ export default function HomeScreen() {
               <Button
                 mode="outlined"
                 icon="account-multiple"
-                onPress={() => console.log('View shared budget')}
+                onPress={() => navigation.navigate('PartnerBudgetView')}
                 style={styles.actionButton}
                 textColor="#FF8FAB"
               >
-                View Shared Budget
+                View Partner's Budget
               </Button>
             </Card.Content>
           </Card>

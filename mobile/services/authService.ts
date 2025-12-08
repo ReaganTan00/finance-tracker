@@ -6,7 +6,7 @@ import * as SecureStore from "expo-secure-store";
 // For iOS simulator: use localhost
 // For physical device: use your computer's IP address (e.g., 192.168.1.100)
 const API_BASE_URL = __DEV__
-  ? "http://192.168.0.10:8080/api" // Physical device on same network
+  ? "http://192.168.1.11:8080/api" // Physical device on same network
   : "http://10.244.74.33:8080/api";
 
 // Storage keys
