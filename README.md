@@ -1,4 +1,4 @@
-# Finance-Together
+# RNFT
 
 A cross-platform personal finance tracking mobile application for managing individual and shared budgets, built with React Native and Spring Boot.
 
