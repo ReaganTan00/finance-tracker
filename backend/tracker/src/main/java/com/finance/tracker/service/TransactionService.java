@@ -1,10 +1,8 @@
 package com.finance.tracker.service;
 
 import com.finance.tracker.dto.TransactionDTO;
-import com.finance.tracker.entity.Budget;
 import com.finance.tracker.entity.Category;
 import com.finance.tracker.entity.Transaction;
-import com.finance.tracker.repository.BudgetRepository;
 import com.finance.tracker.repository.CategoryRepository;
 import com.finance.tracker.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
-    private final BudgetRepository budgetRepository;
     private final UserService userService;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -44,20 +41,8 @@ public class TransactionService {
         Category category = categoryRepository.findByIdAndUserId(request.getCategoryId(), currentUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
 
-        // If budget ID provided, verify it exists and belongs to user
-        if (request.getBudgetId() != null) {
-            Budget budget = budgetRepository.findByIdAndUserId(request.getBudgetId(), currentUser.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
-
-            // Verify budget belongs to the same category
-            if (!budget.getCategoryId().equals(request.getCategoryId())) {
-                throw new IllegalArgumentException("Budget does not belong to the specified category");
-            }
-        }
-
         Transaction transaction = Transaction.builder()
                 .categoryId(request.getCategoryId())
-                .budgetId(request.getBudgetId())
                 .amount(request.getAmount())
                 .type(request.getType())
                 .description(request.getDescription())
@@ -122,27 +107,6 @@ public class TransactionService {
     }
 
     /**
-     * Get transactions for a specific budget
-     */
-    @Transactional(readOnly = true)
-    public List<TransactionDTO.Response> getTransactionsByBudget(Long budgetId) {
-        var currentUser = userService.getCurrentUser();
-        log.info("Fetching transactions for budget {} and user {}", budgetId, currentUser.getId());
-
-        // Verify budget belongs to user
-        Budget budget = budgetRepository.findByIdAndUserId(budgetId, currentUser.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
-
-        List<Transaction> transactions = transactionRepository.findByBudgetId(budgetId);
-        return transactions.stream()
-                .map(transaction -> {
-                    Category category = categoryRepository.findById(transaction.getCategoryId()).orElse(null);
-                    return mapToResponse(transaction, category);
-                })
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Get transactions within a date range
      */
     @Transactional(readOnly = true)
@@ -197,13 +161,6 @@ public class TransactionService {
             transaction.setCategoryId(request.getCategoryId());
         }
 
-        // Update budget if provided
-        if (request.getBudgetId() != null) {
-            Budget budget = budgetRepository.findByIdAndUserId(request.getBudgetId(), currentUser.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
-            transaction.setBudgetId(request.getBudgetId());
-        }
-
         // Update other fields if provided
         if (request.getAmount() != null) {
             transaction.setAmount(request.getAmount());
@@ -251,7 +208,6 @@ public class TransactionService {
                 .id(transaction.getId())
                 .categoryId(transaction.getCategoryId())
                 .categoryName(category != null ? category.getName() : null)
-                .budgetId(transaction.getBudgetId())
                 .amount(transaction.getAmount())
                 .type(transaction.getType())
                 .description(transaction.getDescription())

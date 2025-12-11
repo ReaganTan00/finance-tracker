@@ -14,25 +14,24 @@ import {
   Chip,
   Snackbar,
   SegmentedButtons,
-  Divider,
 } from "react-native-paper";
-import { useBudgetStore } from "../store/budgetStore";
+import { useCategoryStore } from "../store/categoryStore";
 import { useTransactionStore } from "../store/transactionStore";
 import { usePartnerStore } from "../store/partnerStore";
-import { Budget, BudgetPeriod } from "../services/budgetService";
+import { Category } from "../services/categoryService";
 import { Transaction, TransactionType } from "../services/transactionService";
 
-type ViewMode = "budgets" | "transactions";
+type ViewMode = "categories" | "transactions";
 
 const PartnerBudgetViewScreen = () => {
   const { currentPartner } = usePartnerStore();
   const {
-    partnerBudgets,
-    isLoading: budgetsLoading,
-    error: budgetsError,
-    fetchPartnerBudgets,
-    clearError: clearBudgetsError,
-  } = useBudgetStore();
+    categories: partnerCategories,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+    fetchPartnerCategories,
+    clearError: clearCategoriesError,
+  } = useCategoryStore();
   const {
     partnerTransactions,
     isLoading: transactionsLoading,
@@ -41,8 +40,8 @@ const PartnerBudgetViewScreen = () => {
     clearError: clearTransactionsError,
   } = useTransactionStore();
 
-  const [viewMode, setViewMode] = useState<ViewMode>("budgets");
-  const [selectedBudgetId, setSelectedBudgetId] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("categories");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -51,19 +50,19 @@ const PartnerBudgetViewScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (budgetsError) {
-      showSnackbar(budgetsError);
-      clearBudgetsError();
+    if (categoriesError) {
+      showSnackbar(categoriesError);
+      clearCategoriesError();
     }
     if (transactionsError) {
       showSnackbar(transactionsError);
       clearTransactionsError();
     }
-  }, [budgetsError, transactionsError]);
+  }, [categoriesError, transactionsError]);
 
   const loadData = async () => {
     try {
-      await Promise.all([fetchPartnerBudgets(), fetchPartnerTransactions()]);
+      await Promise.all([fetchPartnerCategories(), fetchPartnerTransactions()]);
     } catch (err) {
       console.error("Failed to load partner data:", err);
     }
@@ -83,12 +82,9 @@ const PartnerBudgetViewScreen = () => {
     });
   };
 
-  const formatPeriod = (period: BudgetPeriod): string => {
-    return period.charAt(0) + period.slice(1).toLowerCase();
-  };
-
-  const getProgressColor = (spent: number, amount: number): string => {
-    const percentage = (spent / amount) * 100;
+  const getProgressColor = (spent: number, budget: number): string => {
+    if (budget === 0) return "#999";
+    const percentage = (spent / budget) * 100;
     if (percentage >= 100) return "#d32f2f";
     if (percentage >= 80) return "#f57c00";
     if (percentage >= 60) return "#fbc02d";
@@ -96,8 +92,8 @@ const PartnerBudgetViewScreen = () => {
   };
 
   const getFilteredTransactions = (): Transaction[] => {
-    if (!selectedBudgetId) return partnerTransactions;
-    return partnerTransactions.filter((t) => t.budgetId === selectedBudgetId);
+    if (!selectedCategoryId) return partnerTransactions;
+    return partnerTransactions.filter((t) => t.categoryId === selectedCategoryId);
   };
 
   const calculateTransactionTotals = () => {
@@ -111,48 +107,47 @@ const PartnerBudgetViewScreen = () => {
     return { income, expense, net: income - expense };
   };
 
-  const renderBudgetCard = ({ item }: { item: Budget }) => {
-    const progressPercentage = item.amount > 0 ? item.spent / item.amount : 0;
-    const isOverBudget = item.spent > item.amount;
-    const progressColor = getProgressColor(item.spent, item.amount);
+  const renderCategoryCard = ({ item }: { item: Category }) => {
+    const progressPercentage =
+      item.plannedMonthlyBudget > 0
+        ? item.monthlySpent / item.plannedMonthlyBudget
+        : 0;
+    const isOverBudget = item.monthlySpent > item.plannedMonthlyBudget;
+    const progressColor = getProgressColor(
+      item.monthlySpent,
+      item.plannedMonthlyBudget
+    );
 
     return (
       <Card
         style={[
-          styles.budgetCard,
-          selectedBudgetId === item.id && styles.selectedCard,
+          styles.categoryCard,
+          selectedCategoryId === item.id && styles.selectedCard,
         ]}
         onPress={() =>
-          setSelectedBudgetId(selectedBudgetId === item.id ? null : item.id)
+          setSelectedCategoryId(selectedCategoryId === item.id ? null : item.id)
         }
       >
         <Card.Content>
-          <View style={styles.budgetHeader}>
-            <Text variant="titleLarge" style={styles.budgetTitle}>
-              {item.categoryName || "Unknown Category"}
-            </Text>
-            <View style={styles.budgetHeaderRight}>
-              <Chip
-                icon="calendar-range"
-                mode="outlined"
-                compact
-                style={styles.chip}
-              >
-                {formatPeriod(item.period)}
-              </Chip>
-              {!item.active && (
-                <Chip mode="flat" compact style={styles.expiredChip}>
-                  Expired
-                </Chip>
-              )}
+          <View style={styles.categoryHeader}>
+            <View style={styles.categoryTitleRow}>
+              <View
+                style={[
+                  styles.colorIndicator,
+                  { backgroundColor: item.color || "#6200ee" },
+                ]}
+              />
+              <Text variant="titleLarge" style={styles.categoryTitle}>
+                {item.name}
+              </Text>
             </View>
           </View>
 
-          <View style={styles.dateRow}>
-            <Text variant="bodySmall" style={styles.dateText}>
-              {formatDate(item.startDate)} - {formatDate(item.endDate)}
+          {item.description && (
+            <Text variant="bodySmall" style={styles.description}>
+              {item.description}
             </Text>
-          </View>
+          )}
 
           <View style={styles.amountContainer}>
             <View style={styles.amountRow}>
@@ -161,7 +156,7 @@ const PartnerBudgetViewScreen = () => {
                   Budget
                 </Text>
                 <Text variant="titleMedium" style={styles.amountValue}>
-                  ${item.amount.toFixed(2)}
+                  ${item.plannedMonthlyBudget.toFixed(2)}
                 </Text>
               </View>
               <View style={styles.amountItem}>
@@ -175,7 +170,7 @@ const PartnerBudgetViewScreen = () => {
                     isOverBudget && styles.overBudgetText,
                   ]}
                 >
-                  ${item.spent.toFixed(2)}
+                  ${item.monthlySpent.toFixed(2)}
                 </Text>
               </View>
               <View style={styles.amountItem}>
@@ -189,7 +184,7 @@ const PartnerBudgetViewScreen = () => {
                     isOverBudget && styles.overBudgetText,
                   ]}
                 >
-                  ${item.remaining.toFixed(2)}
+                  ${item.monthlyRemaining.toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -244,7 +239,7 @@ const PartnerBudgetViewScreen = () => {
     );
   };
 
-  const isLoading = budgetsLoading || transactionsLoading;
+  const isLoading = categoriesLoading || transactionsLoading;
   const filteredTransactions = getFilteredTransactions();
   const transactionTotals = calculateTransactionTotals();
 
@@ -264,7 +259,7 @@ const PartnerBudgetViewScreen = () => {
           value={viewMode}
           onValueChange={(value) => setViewMode(value as ViewMode)}
           buttons={[
-            { value: "budgets", label: "Budgets" },
+            { value: "categories", label: "Categories" },
             { value: "transactions", label: "Transactions" },
           ]}
         />
@@ -272,7 +267,7 @@ const PartnerBudgetViewScreen = () => {
         {viewMode === "transactions" && (
           <View style={styles.transactionFilterContainer}>
             <Text variant="bodyMedium" style={styles.filterLabel}>
-              Filter by budget:
+              Filter by category:
             </Text>
             <ScrollView
               horizontal
@@ -280,20 +275,20 @@ const PartnerBudgetViewScreen = () => {
               style={styles.chipScroll}
             >
               <Chip
-                mode={selectedBudgetId === null ? "flat" : "outlined"}
-                onPress={() => setSelectedBudgetId(null)}
+                mode={selectedCategoryId === null ? "flat" : "outlined"}
+                onPress={() => setSelectedCategoryId(null)}
                 style={styles.filterChip}
               >
                 All
               </Chip>
-              {partnerBudgets.map((budget) => (
+              {partnerCategories.map((category) => (
                 <Chip
-                  key={budget.id}
-                  mode={selectedBudgetId === budget.id ? "flat" : "outlined"}
-                  onPress={() => setSelectedBudgetId(budget.id)}
+                  key={category.id}
+                  mode={selectedCategoryId === category.id ? "flat" : "outlined"}
+                  onPress={() => setSelectedCategoryId(category.id)}
                   style={styles.filterChip}
                 >
-                  {budget.categoryName}
+                  {category.name}
                 </Chip>
               ))}
             </ScrollView>
@@ -301,10 +296,10 @@ const PartnerBudgetViewScreen = () => {
         )}
       </View>
 
-      {viewMode === "budgets" ? (
+      {viewMode === "categories" ? (
         <FlatList
-          data={partnerBudgets}
-          renderItem={renderBudgetCard}
+          data={partnerCategories}
+          renderItem={renderCategoryCard}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.listContent}
           refreshControl={
@@ -314,10 +309,10 @@ const PartnerBudgetViewScreen = () => {
             !isLoading ? (
               <View style={styles.emptyContainer}>
                 <Text variant="bodyLarge" style={styles.emptyText}>
-                  No budgets to display
+                  No categories to display
                 </Text>
                 <Text variant="bodyMedium" style={styles.emptySubtext}>
-                  Your partner hasn't created any budgets yet
+                  Your partner hasn't created any categories yet
                 </Text>
               </View>
             ) : null
@@ -385,8 +380,8 @@ const PartnerBudgetViewScreen = () => {
                     No transactions to display
                   </Text>
                   <Text variant="bodyMedium" style={styles.emptySubtext}>
-                    {selectedBudgetId
-                      ? "No transactions for this budget"
+                    {selectedCategoryId
+                      ? "No transactions for this category"
                       : "Your partner hasn't added any transactions yet"}
                   </Text>
                 </View>
@@ -449,7 +444,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flexGrow: 1,
   },
-  budgetCard: {
+  categoryCard: {
     marginBottom: 16,
     borderRadius: 12,
     elevation: 2,
@@ -458,32 +453,26 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#6200ee",
   },
-  budgetHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+  categoryHeader: {
     marginBottom: 8,
   },
-  budgetTitle: {
+  categoryTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  colorIndicator: {
+    width: 4,
+    height: 24,
+    borderRadius: 2,
+    marginRight: 12,
+  },
+  categoryTitle: {
     fontWeight: "600",
     flex: 1,
   },
-  budgetHeaderRight: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  chip: {
-    height: 28,
-  },
-  expiredChip: {
-    backgroundColor: "#ffebee",
-    height: 28,
-  },
-  dateRow: {
-    marginBottom: 16,
-  },
-  dateText: {
+  description: {
     color: "#666",
+    marginBottom: 8,
   },
   amountContainer: {
     marginBottom: 16,
@@ -562,9 +551,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 4,
   },
-  description: {
+  dateText: {
     color: "#666",
-    marginBottom: 4,
   },
   amount: {
     fontWeight: "700",

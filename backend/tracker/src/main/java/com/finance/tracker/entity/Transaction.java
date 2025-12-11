@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 @Table(name = "transactions", indexes = {
         @Index(name = "idx_transaction_user", columnList = "user_id"),
         @Index(name = "idx_transaction_category", columnList = "category_id"),
-        @Index(name = "idx_transaction_budget", columnList = "budget_id"),
         @Index(name = "idx_transaction_date", columnList = "transaction_date"),
         @Index(name = "idx_transaction_type", columnList = "type")
 })
@@ -40,9 +39,6 @@ public class Transaction {
     @NotNull(message = "Category ID is required")
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
-
-    @Column(name = "budget_id")
-    private Long budgetId;
 
     @NotNull(message = "Transaction amount is required")
     @Positive(message = "Transaction amount must be positive")

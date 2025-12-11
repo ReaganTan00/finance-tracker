@@ -33,11 +33,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByCategoryId(Long categoryId);
 
     /**
-     * Find all transactions for a specific budget
-     */
-    List<Transaction> findByBudgetId(Long budgetId);
-
-    /**
      * Find all transactions for a specific user and category
      */
     List<Transaction> findByUserIdAndCategoryId(Long userId, Long categoryId);
@@ -60,13 +55,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserIdAndType(Long userId, Transaction.TransactionType type);
 
     /**
-     * Calculate total amount spent in a budget
-     */
-    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
-           "WHERE t.budgetId = :budgetId AND t.type = 'EXPENSE'")
-    BigDecimal calculateTotalSpentForBudget(@Param("budgetId") Long budgetId);
-
-    /**
      * Calculate total expenses for a user in a date range
      */
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
@@ -86,6 +74,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            "AND t.transactionDate BETWEEN :startDate AND :endDate")
     BigDecimal calculateTotalIncome(
         @Param("userId") Long userId,
+        @Param("startDate") LocalDate startDate,
+        @Param("endDate") LocalDate endDate
+    );
+
+    /**
+     * Calculate total expenses for a category in a date range
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
+           "WHERE t.categoryId = :categoryId AND t.type = 'EXPENSE' " +
+           "AND t.transactionDate BETWEEN :startDate AND :endDate")
+    BigDecimal calculateTotalSpentForCategoryInDateRange(
+        @Param("categoryId") Long categoryId,
         @Param("startDate") LocalDate startDate,
         @Param("endDate") LocalDate endDate
     );

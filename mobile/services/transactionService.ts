@@ -13,7 +13,6 @@ export interface Transaction {
   id: number;
   categoryId: number;
   categoryName?: string;
-  budgetId?: number;
   amount: number;
   type: TransactionType;
   description?: string;
@@ -25,7 +24,6 @@ export interface Transaction {
 
 export interface CreateTransactionRequest {
   categoryId: number;
-  budgetId?: number;
   amount: number;
   type: TransactionType;
   description?: string;
@@ -34,7 +32,6 @@ export interface CreateTransactionRequest {
 
 export interface UpdateTransactionRequest {
   categoryId?: number;
-  budgetId?: number;
   amount?: number;
   type?: TransactionType;
   description?: string;

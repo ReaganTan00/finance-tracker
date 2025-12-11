@@ -58,6 +58,7 @@ interface CategoryFormData {
   icon: string;
   color: string;
   description: string;
+  plannedMonthlyBudget: string;
 }
 
 const CategoryManagementScreen = () => {
@@ -79,6 +80,7 @@ const CategoryManagementScreen = () => {
     icon: AVAILABLE_ICONS[0],
     color: AVAILABLE_COLORS[0],
     description: "",
+    plannedMonthlyBudget: "0",
   });
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -114,6 +116,7 @@ const CategoryManagementScreen = () => {
       icon: AVAILABLE_ICONS[0],
       color: AVAILABLE_COLORS[0],
       description: "",
+      plannedMonthlyBudget: "0",
     });
     setModalVisible(true);
   };
@@ -125,6 +128,7 @@ const CategoryManagementScreen = () => {
       icon: category.icon || AVAILABLE_ICONS[0],
       color: category.color || AVAILABLE_COLORS[0],
       description: category.description || "",
+      plannedMonthlyBudget: category.plannedMonthlyBudget?.toString() || "0",
     });
     setModalVisible(true);
   };
@@ -137,12 +141,19 @@ const CategoryManagementScreen = () => {
       icon: AVAILABLE_ICONS[0],
       color: AVAILABLE_COLORS[0],
       description: "",
+      plannedMonthlyBudget: "0",
     });
   };
 
   const handleSave = async () => {
     if (!formData.name.trim()) {
       showSnackbar("Category name is required");
+      return;
+    }
+
+    const budgetAmount = parseFloat(formData.plannedMonthlyBudget);
+    if (isNaN(budgetAmount) || budgetAmount < 0) {
+      showSnackbar("Please enter a valid budget amount");
       return;
     }
 
@@ -153,6 +164,7 @@ const CategoryManagementScreen = () => {
           icon: formData.icon,
           color: formData.color,
           description: formData.description.trim() || undefined,
+          plannedMonthlyBudget: budgetAmount,
         });
         showSnackbar("Category updated successfully");
       } else {
@@ -161,6 +173,7 @@ const CategoryManagementScreen = () => {
           icon: formData.icon,
           color: formData.color,
           description: formData.description.trim() || undefined,
+          plannedMonthlyBudget: budgetAmount,
         });
         showSnackbar("Category created successfully");
       }
@@ -217,6 +230,23 @@ const CategoryManagementScreen = () => {
                 {item.description}
               </Text>
             )}
+            <View style={styles.budgetInfo}>
+              <Text variant="bodySmall" style={styles.budgetText}>
+                Budget: ${item.plannedMonthlyBudget?.toFixed(2) || "0.00"}
+              </Text>
+              <Text variant="bodySmall" style={styles.budgetText}>
+                • Spent: ${item.monthlySpent?.toFixed(2) || "0.00"}
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={[
+                  styles.budgetText,
+                  item.monthlyRemaining < 0 && styles.overBudget
+                ]}
+              >
+                • Left: ${item.monthlyRemaining?.toFixed(2) || "0.00"}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.categoryActions}>
@@ -360,6 +390,19 @@ const CategoryManagementScreen = () => {
                   placeholder="Brief description of this category"
                 />
 
+                <TextInput
+                  label="Monthly Budget"
+                  value={formData.plannedMonthlyBudget}
+                  onChangeText={(text) =>
+                    setFormData({ ...formData, plannedMonthlyBudget: text })
+                  }
+                  mode="outlined"
+                  keyboardType="decimal-pad"
+                  left={<TextInput.Affix text="$" />}
+                  style={styles.input}
+                  placeholder="0.00"
+                />
+
                 {renderIconSelector()}
                 {renderColorSelector()}
 
@@ -470,6 +513,20 @@ const styles = StyleSheet.create({
   categoryDescription: {
     color: "#666",
     marginTop: 4,
+  },
+  budgetInfo: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 6,
+    gap: 8,
+  },
+  budgetText: {
+    color: "#666",
+    fontSize: 12,
+  },
+  overBudget: {
+    color: "#d32f2f",
+    fontWeight: "600",
   },
   categoryActions: {
     flexDirection: "row",

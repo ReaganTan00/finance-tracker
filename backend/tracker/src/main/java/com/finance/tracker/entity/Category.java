@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -48,6 +50,10 @@ public class Category {
     @Size(max = 200, message = "Description must not exceed 200 characters")
     @Column(length = 200)
     private String description;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Planned monthly budget must be non-negative")
+    @Column(name = "planned_monthly_budget", precision = 19, scale = 2)
+    private BigDecimal plannedMonthlyBudget;
 
     @NotNull(message = "User ID is required")
     @Column(name = "user_id", nullable = false)

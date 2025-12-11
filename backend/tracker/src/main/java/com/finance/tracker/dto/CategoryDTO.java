@@ -1,11 +1,14 @@
 package com.finance.tracker.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 /**
  * Data Transfer Objects for Category Management
@@ -33,6 +36,9 @@ public class CategoryDTO {
 
         @Size(max = 200, message = "Description must not exceed 200 characters")
         private String description;
+
+        @DecimalMin(value = "0.0", inclusive = true, message = "Planned monthly budget must be non-negative")
+        private BigDecimal plannedMonthlyBudget;
     }
 
     /**
@@ -55,6 +61,9 @@ public class CategoryDTO {
 
         @Size(max = 200, message = "Description must not exceed 200 characters")
         private String description;
+
+        @DecimalMin(value = "0.0", inclusive = true, message = "Planned monthly budget must be non-negative")
+        private BigDecimal plannedMonthlyBudget;
     }
 
     /**
@@ -70,6 +79,9 @@ public class CategoryDTO {
         private String icon;
         private String color;
         private String description;
+        private BigDecimal plannedMonthlyBudget;
+        private BigDecimal monthlySpent; // Calculated field for current month spending
+        private BigDecimal monthlyRemaining; // Calculated field for remaining budget
         private Long userId;
         private String createdAt;
         private String updatedAt;

@@ -107,27 +107,6 @@ public class TransactionController {
     }
 
     /**
-     * Get transactions for a specific budget
-     * GET /api/transactions/budget/{budgetId}
-     */
-    @GetMapping("/budget/{budgetId}")
-    public ResponseEntity<?> getTransactionsByBudget(@PathVariable Long budgetId) {
-        try {
-            log.info("Get transactions by budget request received for budget ID: {}", budgetId);
-            List<TransactionDTO.Response> response = transactionService.getTransactionsByBudget(budgetId);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            log.error("Get transactions by budget failed: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            log.error("Unexpected error fetching transactions by budget", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Failed to fetch transactions. Please try again."));
-        }
-    }
-
-    /**
      * Get transactions by date range
      * GET /api/transactions/range?startDate=2024-01-01&endDate=2024-12-31
      */

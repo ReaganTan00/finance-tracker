@@ -1,10 +1,8 @@
 package com.finance.tracker.controller;
 
-import com.finance.tracker.dto.BudgetDTO;
 import com.finance.tracker.dto.CategoryDTO;
 import com.finance.tracker.dto.PartnerDTO;
 import com.finance.tracker.dto.TransactionDTO;
-import com.finance.tracker.service.BudgetService;
 import com.finance.tracker.service.CategoryService;
 import com.finance.tracker.service.PartnerService;
 import com.finance.tracker.service.TransactionService;
@@ -30,7 +28,6 @@ public class PartnerController {
 
     private final PartnerService partnerService;
     private final CategoryService categoryService;
-    private final BudgetService budgetService;
     private final TransactionService transactionService;
 
     /**
@@ -180,54 +177,6 @@ public class PartnerController {
             log.error("Unexpected error fetching partner categories", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponse("Failed to fetch partner categories. Please try again."));
-        }
-    }
-
-    /**
-     * Get partner's budgets
-     * GET /api/partner/budgets
-     */
-    @GetMapping("/budgets")
-    public ResponseEntity<?> getPartnerBudgets() {
-        try {
-            log.info("Fetching partner's budgets");
-            PartnerDTO.PartnerStatus status = partnerService.getPartnerStatus();
-
-            if (status.getCurrentPartner() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ErrorResponse("No partner connected"));
-            }
-
-            List<BudgetDTO.Response> budgets = budgetService.getAllBudgets();
-            return ResponseEntity.ok(budgets);
-        } catch (Exception e) {
-            log.error("Unexpected error fetching partner budgets", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Failed to fetch partner budgets. Please try again."));
-        }
-    }
-
-    /**
-     * Get partner's active budgets
-     * GET /api/partner/budgets/active
-     */
-    @GetMapping("/budgets/active")
-    public ResponseEntity<?> getPartnerActiveBudgets() {
-        try {
-            log.info("Fetching partner's active budgets");
-            PartnerDTO.PartnerStatus status = partnerService.getPartnerStatus();
-
-            if (status.getCurrentPartner() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ErrorResponse("No partner connected"));
-            }
-
-            List<BudgetDTO.Response> budgets = budgetService.getActiveBudgets();
-            return ResponseEntity.ok(budgets);
-        } catch (Exception e) {
-            log.error("Unexpected error fetching partner active budgets", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Failed to fetch partner active budgets. Please try again."));
         }
     }
 

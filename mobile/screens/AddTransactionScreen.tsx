@@ -20,9 +20,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTransactionStore } from "../store/transactionStore";
 import { useCategoryStore } from "../store/categoryStore";
-import { useBudgetStore } from "../store/budgetStore";
 import { Transaction, TransactionType } from "../services/transactionService";
-import { Budget } from "../services/budgetService";
 
 interface RouteParams {
   transaction?: Transaction;
@@ -36,17 +34,14 @@ const AddTransactionScreen = () => {
   const { createTransaction, updateTransaction, isLoading, error, clearError } =
     useTransactionStore();
   const { categories, fetchCategories } = useCategoryStore();
-  const { budgets, fetchActiveBudgets } = useBudgetStore();
 
   const [type, setType] = useState<TransactionType>(TransactionType.EXPENSE);
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [budgetId, setBudgetId] = useState<number | null>(null);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [transactionDate, setTransactionDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [categoryMenuVisible, setCategoryMenuVisible] = useState(false);
-  const [budgetMenuVisible, setBudgetMenuVisible] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -56,7 +51,6 @@ const AddTransactionScreen = () => {
     if (editingTransaction) {
       setType(editingTransaction.type);
       setCategoryId(editingTransaction.categoryId);
-      setBudgetId(editingTransaction.budgetId || null);
       setAmount(editingTransaction.amount.toString());
       setDescription(editingTransaction.description || "");
       setTransactionDate(new Date(editingTransaction.transactionDate));
@@ -70,20 +64,9 @@ const AddTransactionScreen = () => {
     }
   }, [error]);
 
-  useEffect(() => {
-    // Reset budget selection when category changes
-    if (categoryId && budgetId) {
-      const selectedBudget = budgets.find((b) => b.id === budgetId);
-      if (selectedBudget && selectedBudget.categoryId !== categoryId) {
-        setBudgetId(null);
-      }
-    }
-  }, [categoryId]);
-
   const loadData = async () => {
     try {
       await fetchCategories();
-      await fetchActiveBudgets();
     } catch (err) {
       console.error("Failed to load data:", err);
     }
@@ -102,16 +85,6 @@ const AddTransactionScreen = () => {
   const getCategoryColor = (id: number): string => {
     const category = categories.find((c) => c.id === id);
     return category?.color || "#6200ee";
-  };
-
-  const getBudgetLabel = (budget: Budget): string => {
-    const category = getCategoryName(budget.categoryId);
-    return `${category} - $${budget.remaining.toFixed(2)} left`;
-  };
-
-  const getAvailableBudgets = (): Budget[] => {
-    if (!categoryId) return [];
-    return budgets.filter((b) => b.categoryId === categoryId && b.active);
   };
 
   const formatDate = (date: Date): string => {
@@ -155,7 +128,6 @@ const AddTransactionScreen = () => {
       const transactionData = {
         type,
         categoryId: categoryId!,
-        budgetId: budgetId || undefined,
         amount: parseFloat(amount),
         description: description.trim() || undefined,
         transactionDate: formatDateForAPI(transactionDate),
@@ -176,8 +148,6 @@ const AddTransactionScreen = () => {
       console.error("Failed to save transaction:", err);
     }
   };
-
-  const availableBudgets = getAvailableBudgets();
 
   return (
     <Surface style={styles.container}>
@@ -269,64 +239,6 @@ const AddTransactionScreen = () => {
             </Menu>
           </Card.Content>
         </Card>
-
-        {type === TransactionType.EXPENSE && categoryId && (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Text variant="titleLarge" style={styles.sectionTitle}>
-                Link to Budget (Optional)
-              </Text>
-              <Menu
-                visible={budgetMenuVisible}
-                onDismiss={() => setBudgetMenuVisible(false)}
-                anchor={
-                  <Button
-                    mode="outlined"
-                    onPress={() => setBudgetMenuVisible(true)}
-                    style={styles.selectButton}
-                    contentStyle={styles.selectButtonContent}
-                    icon="chevron-down"
-                    disabled={availableBudgets.length === 0}
-                  >
-                    {budgetId
-                      ? getBudgetLabel(
-                          budgets.find((b) => b.id === budgetId)!
-                        )
-                      : availableBudgets.length > 0
-                      ? "Select Budget"
-                      : "No active budgets"}
-                  </Button>
-                }
-              >
-                <Menu.Item
-                  onPress={() => {
-                    setBudgetId(null);
-                    setBudgetMenuVisible(false);
-                  }}
-                  title="None"
-                />
-                <Divider />
-                {availableBudgets.map((budget) => (
-                  <React.Fragment key={budget.id}>
-                    <Menu.Item
-                      onPress={() => {
-                        setBudgetId(budget.id);
-                        setBudgetMenuVisible(false);
-                      }}
-                      title={getBudgetLabel(budget)}
-                    />
-                    <Divider />
-                  </React.Fragment>
-                ))}
-              </Menu>
-              {availableBudgets.length === 0 && (
-                <Text variant="bodySmall" style={styles.helperText}>
-                  Create an active budget for this category to link transactions
-                </Text>
-              )}
-            </Card.Content>
-          </Card>
-        )}
 
         <Card style={styles.card}>
           <Card.Content>

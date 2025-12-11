@@ -10,6 +10,9 @@ export interface Category {
   icon?: string;
   color?: string;
   description?: string;
+  plannedMonthlyBudget: number;
+  monthlySpent: number;
+  monthlyRemaining: number;
   userId: number;
   createdAt: string;
   updatedAt: string;
@@ -20,6 +23,7 @@ export interface CreateCategoryRequest {
   icon?: string;
   color?: string;
   description?: string;
+  plannedMonthlyBudget?: number;
 }
 
 export interface UpdateCategoryRequest {
@@ -27,6 +31,7 @@ export interface UpdateCategoryRequest {
   icon?: string;
   color?: string;
   description?: string;
+  plannedMonthlyBudget?: number;
 }
 
 interface ErrorResponse {

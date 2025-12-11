@@ -1,0 +1,16 @@
+After running Step 4 of your previous response, I received this error:
+
+PS C:\Users\reaga\projects\finance-tracker\mobile> npx expo start -c
+Starting project at C:\Users\reaga\projects\finance-tracker\mobile
+WorkletsBabelPluginError: [Worklets] Babel plugin exception: Cannot set properties of undefined (setting 'workletNumber')
+WorkletsBabelPluginError: [Worklets] Babel plugin exception: Cannot set properties of undefined (setting 'workletNumber')
+    at initializeState (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:512:27)
+    at C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:1790:39
+    at runWithTaggedExceptions (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:1778:7)
+    at pre (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:1789:7)
+    at serializeAndEvaluate (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Serialize.js:21:12)
+    at serializeAfterStaticPlugins (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Serialize.js:84:30)
+    at withConfigPlugins (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\plugins\withConfigPlugins.js:41:55)
+    at fillAndReturnConfig (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Config.js:236:78)
+    at getConfig (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Config.js:293:10)
+    at startAsync (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\expo\node_modules\@expo\cli\build\src\start\startAsync.js:129:68)

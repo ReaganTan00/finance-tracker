@@ -29,8 +29,6 @@ public class TransactionDTO {
         @NotNull(message = "Category ID is required")
         private Long categoryId;
 
-        private Long budgetId;
-
         @NotNull(message = "Transaction amount is required")
         @Positive(message = "Transaction amount must be positive")
         private BigDecimal amount;
@@ -56,8 +54,6 @@ public class TransactionDTO {
 
         private Long categoryId;
 
-        private Long budgetId;
-
         @Positive(message = "Transaction amount must be positive")
         private BigDecimal amount;
 
@@ -80,7 +76,6 @@ public class TransactionDTO {
         private Long id;
         private Long categoryId;
         private String categoryName;
-        private Long budgetId;
         private BigDecimal amount;
         private Transaction.TransactionType type;
         private String description;
