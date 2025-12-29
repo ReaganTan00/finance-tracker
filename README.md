@@ -1,6 +1,7 @@
-# Finance Tracker App
+# RecordNest Finance Tracker (RNFT)
 
-A cross-platform personal finance tracking mobile application for managing individual and shared budgets, built with React Native and Spring Boot.
+A cozy nest to track and keep records of your finances with a companion! 
+This is cross-platform personal finance tracking mobile application for managing individual and shared budgets, built with React Native and Spring Boot.
 
 ---
 
