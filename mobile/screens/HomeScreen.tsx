@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import { Card, Title, Paragraph, Button, Avatar, Divider, SegmentedButtons, IconButton, DataTable } from 'react-native-paper';
+import { Card, Title, Paragraph, Button, Avatar, Divider, SegmentedButtons, IconButton, DataTable, Icon } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { VictoryPie } from 'victory-native';
@@ -207,6 +207,8 @@ export default function HomeScreen() {
         x: 'No Data',
         y: 1,
         color: '#e0e0e0',
+        percentage: 0,
+        amount: 0,
       }];
     }
 
@@ -214,6 +216,8 @@ export default function HomeScreen() {
       x: cat.categoryName,
       y: cat.amount,
       color: cat.categoryColor,
+      percentage: cat.percentage,
+      amount: cat.amount,
     }));
   }, [categorySpending]);
 
@@ -333,18 +337,18 @@ export default function HomeScreen() {
                   data={pieChartData}
                   colorScale={pieChartData.map(d => d.color)}
                   width={Dimensions.get('window').width - 64}
-                  height={220}
-                  padding={40}
+                  height={250}
+                  padding={50}
                   innerRadius={50}
-                  labelRadius={({ innerRadius }) => (innerRadius as number) + 30}
+                  labelRadius={({ innerRadius }) => (innerRadius as number) + 35}
                   style={{
                     labels: {
                       fill: '#333',
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: '600'
                     },
                   }}
-                  labels={({ datum }) => `${datum.x}\n${datum.percentage?.toFixed(0) || 0}%`}
+                  labels={({ datum }) => `${datum.x}\n${datum.percentage?.toFixed(1) || 0}%\n$${datum.amount?.toFixed(2) || 0}`}
                 />
               </View>
             ) : (
@@ -370,11 +374,10 @@ export default function HomeScreen() {
                     <DataTable.Row key={cat.categoryId}>
                       <DataTable.Cell>
                         <View style={styles.categoryCell}>
-                          <View
-                            style={[
-                              styles.categoryColorDot,
-                              { backgroundColor: cat.categoryColor },
-                            ]}
+                          <Icon
+                            source={cat.categoryIcon}
+                            size={20}
+                            color={cat.categoryColor}
                           />
                           <Paragraph style={styles.categoryNameText}>
                             {cat.categoryName}
@@ -639,16 +642,12 @@ const styles = StyleSheet.create({
   categoryCell: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  categoryColorDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 8,
+    gap: 8,
   },
   categoryNameText: {
     fontSize: 14,
     color: '#333333',
+    marginLeft: 4,
   },
   percentageText: {
     fontSize: 14,

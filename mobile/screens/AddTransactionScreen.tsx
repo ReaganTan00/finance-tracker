@@ -206,7 +206,9 @@ const AddTransactionScreen = () => {
                           { backgroundColor: getCategoryColor(categoryId) },
                         ]}
                       />
-                      <Text>{getCategoryName(categoryId)}</Text>
+                      <Text style={styles.categoryText} numberOfLines={1} ellipsizeMode="tail">
+                        {getCategoryName(categoryId)}
+                      </Text>
                     </View>
                   ) : (
                     "Select Category"
@@ -229,7 +231,9 @@ const AddTransactionScreen = () => {
                             { backgroundColor: category.color || "#6200ee" },
                           ]}
                         />
-                        <Text>{category.name}</Text>
+                        <Text style={styles.categoryText} numberOfLines={2} ellipsizeMode="tail">
+                          {category.name}
+                        </Text>
                       </View>
                     }
                   />
@@ -362,16 +366,23 @@ const styles = StyleSheet.create({
   selectedItem: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
   },
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
+  },
+  categoryText: {
+    flex: 1,
+    flexShrink: 1,
   },
   colorDot: {
     width: 12,
     height: 12,
     borderRadius: 6,
     marginRight: 12,
+    flexShrink: 0,
   },
   input: {
     marginBottom: 8,

@@ -1,16 +1,19 @@
-After running Step 4 of your previous response, I received this error:
+Great, the charts are working. I would now like to implement the following features:
 
-PS C:\Users\reaga\projects\finance-tracker\mobile> npx expo start -c
-Starting project at C:\Users\reaga\projects\finance-tracker\mobile
-WorkletsBabelPluginError: [Worklets] Babel plugin exception: Cannot set properties of undefined (setting 'workletNumber')
-WorkletsBabelPluginError: [Worklets] Babel plugin exception: Cannot set properties of undefined (setting 'workletNumber')
-    at initializeState (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:512:27)
-    at C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:1790:39
-    at runWithTaggedExceptions (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:1778:7)
-    at pre (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\react-native-worklets\plugin\index.js:1789:7)
-    at serializeAndEvaluate (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Serialize.js:21:12)
-    at serializeAfterStaticPlugins (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Serialize.js:84:30)
-    at withConfigPlugins (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\plugins\withConfigPlugins.js:41:55)
-    at fillAndReturnConfig (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Config.js:236:78)
-    at getConfig (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\@expo\config\build\Config.js:293:10)
-    at startAsync (C:\Users\reaga\projects\finance-tracker\mobile\node_modules\expo\node_modules\@expo\cli\build\src\start\startAsync.js:129:68)
+<features>
+1. I would like the Breakdown by Category to show the icons of the category with the colour chosen
+2. Within the Transactions page, the Category selector is currently not displaying the full text, it is clipped on the display
+3. Provide a starting set of categories so that the user may use some of these common categories and please attach icons to them deemed appropriate:
+    a) Fixed Expenses - Description: Recommended 35% of income, includes saving for BTO, Phone, Utilities & Subscriptions
+    b) Insurance - Description: Recommended 10% of income, Life, Health, Hospitalisation, Accident, Critical Illnesses etc.
+    c) Daily Necessities - Description: Recommended 5% of income, Groceries, Toiletries, Household Items, Dining Essentials etc.
+    d) Transportation - Description: Recommended 3% of income, Public Transport, Petrol, Parking, Maintenance, Road Tax etc.
+    e) Investments, Savings & Retirements - Description: Recommended 25% of income, Includes both short-term (savings) and long-term (investments) goals
+    f) Holidays & Leisure - Description: Recommended 5% of income, Trips & Staycations
+    g) Flexible Spending - Description: Recommended 10% of income, Clothes, Beauty, Gifts, Eating Out, Spontaneous Buys etc.
+    h) Emergency - Description: Recommended 3 months of income, Unexpected Expenses & Rainy Days
+</features>
+
+<instructions>
+As always, adhere to the project instructions and good practices as written in `CLAUDE.md`
+</instructions>

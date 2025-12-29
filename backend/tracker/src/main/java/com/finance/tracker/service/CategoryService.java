@@ -160,6 +160,91 @@ public class CategoryService {
     }
 
     /**
+     * Create default starter categories for a new user
+     */
+    @Transactional
+    public void createDefaultCategories(Long userId) {
+        log.info("Creating default categories for user {}", userId);
+
+        // Check if user already has categories
+        if (categoryRepository.existsByUserId(userId)) {
+            log.info("User {} already has categories, skipping default creation", userId);
+            return;
+        }
+
+        // Define default categories with icons, colors, and descriptions
+        List<Category> defaultCategories = List.of(
+                Category.builder()
+                        .name("Fixed Expenses")
+                        .icon("home")
+                        .color("#FF6B6B")
+                        .description("Recommended 35% of income, includes saving for BTO, Phone, Utilities & Subscriptions")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Insurance")
+                        .icon("shield-check")
+                        .color("#4ECDC4")
+                        .description("Recommended 10% of income, Life, Health, Hospitalisation, Accident, Critical Illnesses etc.")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Daily Necessities")
+                        .icon("cart")
+                        .color("#95E1D3")
+                        .description("Recommended 5% of income, Groceries, Toiletries, Household Items, Dining Essentials etc.")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Transportation")
+                        .icon("car")
+                        .color("#F38181")
+                        .description("Recommended 3% of income, Public Transport, Petrol, Parking, Maintenance, Road Tax etc.")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Investments, Savings & Retirements")
+                        .icon("chart-line")
+                        .color("#AA96DA")
+                        .description("Recommended 25% of income, Includes both short-term (savings) and long-term (investments) goals")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Holidays & Leisure")
+                        .icon("beach")
+                        .color("#FCBAD3")
+                        .description("Recommended 5% of income, Trips & Staycations")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Flexible Spending")
+                        .icon("shopping")
+                        .color("#FFFFD2")
+                        .description("Recommended 10% of income, Clothes, Beauty, Gifts, Eating Out, Spontaneous Buys etc.")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build(),
+                Category.builder()
+                        .name("Emergency")
+                        .icon("alert-circle")
+                        .color("#FF8B94")
+                        .description("Recommended 3 months of income, Unexpected Expenses & Rainy Days")
+                        .plannedMonthlyBudget(BigDecimal.ZERO)
+                        .userId(userId)
+                        .build()
+        );
+
+        categoryRepository.saveAll(defaultCategories);
+        log.info("Created {} default categories for user {}", defaultCategories.size(), userId);
+    }
+
+    /**
      * Map Category entity to Response DTO
      */
     private CategoryDTO.Response mapToResponse(Category category) {

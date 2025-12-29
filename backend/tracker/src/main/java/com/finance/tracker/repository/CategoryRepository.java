@@ -29,6 +29,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByNameAndUserId(String name, Long userId);
 
     /**
+     * Check if a user has any categories
+     */
+    boolean existsByUserId(Long userId);
+
+    /**
      * Delete a category by ID and user ID
      */
     void deleteByIdAndUserId(Long id, Long userId);

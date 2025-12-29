@@ -29,6 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final CategoryService categoryService;
 
     /**
      * Register a new user
@@ -56,6 +57,9 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with ID: {}", savedUser.getId());
+
+        // Create default starter categories for the new user
+        categoryService.createDefaultCategories(savedUser.getId());
 
         // Generate JWT token
         CustomUserDetails userDetails = CustomUserDetails.build(savedUser);
